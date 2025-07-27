@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chợ Đồ Cũ - Mua bán đồ cũ uy tín</title>
+    <meta name="description" content="Chợ đồ cũ - Nền tảng mua bán đồ cũ uy tín, kết nối người mua và người bán trên toàn quốc. Tìm kiếm sản phẩm chất lượng với giá tốt.">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-recycle"></i>
+                    <h1>Chợ Đồ Cũ</h1>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <form class="search-form" onsubmit="handleSearch(event)">
+                        <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." class="search-input">
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Header Actions -->
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="showAddProductModal()">
+                        <i class="fas fa-plus"></i>
+                        Đăng bán
+                    </button>
+                    <button class="btn btn-ghost" onclick="showFavoritesModal()" title="Sản phẩm yêu thích">
+                        <i class="fas fa-heart"></i>
+                        <span class="favorites-count" id="favorites-count">0</span>
+                    </button>
+                    <div class="user-menu" id="user-menu">
+                        <button class="btn btn-ghost" onclick="toggleUserDropdown()" id="user-btn">
+                            <i class="fas fa-user-circle"></i>
+                            <span id="user-display">Đăng nhập</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown">
+                            <div id="guest-menu" class="menu-section">
+                                <a href="#" onclick="showLoginModal()" class="dropdown-item">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    Đăng nhập
+                                </a>
+                                <a href="#" onclick="showRegisterModal()" class="dropdown-item">
+                                    <i class="fas fa-user-plus"></i>
+                                    Đăng ký
+                                </a>
+                            </div>
+                            <div id="user-menu-items" class="menu-section" style="display: none;">
+                                <a href="#" class="dropdown-item">
+                                    <i class="fas fa-user"></i>
+                                    Tài khoản của tôi
+                                </a>
+                                <a href="#" onclick="showMyProducts()" class="dropdown-item">
+                                    <i class="fas fa-box"></i>
+                                    Tin đã đăng
+                                </a>
+                                <a href="#" onclick="showFavoritesModal()" class="dropdown-item">
+                                    <i class="fas fa-heart"></i>
+                                    Yêu thích
+                                </a>
+                                <hr class="dropdown-divider">
+                                <a href="#" onclick="logout()" class="dropdown-item text-red">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Đăng xuất
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Search -->
+            <div class="mobile-search">
+                <form class="search-form" onsubmit="handleSearch(event)">
+                    <input type="text" placeholder="Tìm kiếm sản phẩm..." class="search-input">
+                    <select class="search-type-select mobile">
+                        <option value="all">Tất cả</option>
+                        <option value="title">Tiêu đề</option>
+                        <option value="description">Mô tả</option>
+                        <option value="seller">Người bán</option>
+                    </select>
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <div class="content-layout">
+                <!-- Filter Sidebar -->
+                <aside class="sidebar">
+                    <div class="filter-card">
+                        <h3>Bộ lọc</h3>
+                        
+                        <!-- Categories -->
+                        <div class="filter-section">
+                            <h4>Danh mục</h4>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="electronics" onchange="applyFilters()">
+                                    <span>Điện tử (6)</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="fashion" onchange="applyFilters()">
+                                    <span>Thời trang (4)</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="home" onchange="applyFilters()">
+                                    <span>Gia dụng (3)</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="books" onchange="applyFilters()">
+                                    <span>Sách & Đĩa (2)</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="vehicles" onchange="applyFilters()">
+                                    <span>Xe cộ (1)</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Price Range -->
+                        <div class="filter-section">
+                            <h4>Khoảng giá</h4>
+                            <div class="price-range">
+                                <div class="price-input-group">
+                                    <input type="number" id="min-price" placeholder="Từ" class="price-input">
+                                    <span class="currency-label">đ</span>
+                                </div>
+                                <span class="price-separator">-</span>
+                                <div class="price-input-group">
+                                    <input type="number" id="max-price" placeholder="Đến" class="price-input">
+                                    <span class="currency-label">đ</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary btn-full" onclick="applyPriceFilter()">
+                                Áp dụng
+                            </button>
+                        </div>
+                        
+                        <!-- Condition -->
+                        <div class="filter-section">
+                            <h4>Tình trạng</h4>
+                            <div class="radio-group">
+                                <label class="radio-item">
+                                    <input type="radio" name="condition" value="" onchange="applyFilters()" checked>
+                                    <span>Tất cả</span>
+                                </label>
+                                <label class="radio-item">
+                                    <input type="radio" name="condition" value="new" onchange="applyFilters()">
+                                    <span>Như mới</span>
+                                </label>
+                                <label class="radio-item">
+                                    <input type="radio" name="condition" value="used" onchange="applyFilters()">
+                                    <span>Đã sử dụng</span>
+                                </label>
+                                <label class="radio-item">
+                                    <input type="radio" name="condition" value="repair" onchange="applyFilters()">
+                                    <span>Cần sửa chữa</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-ghost btn-full" onclick="clearFilters()">
+                            Xóa bộ lọc
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Products Section -->
+                <section class="products-section">
+                    <!-- Sort Controls -->
+                    <div class="sort-controls">
+                        <div class="results-count">
+                            <span id="results-count">Tìm thấy 8 sản phẩm</span>
+                        </div>
+                        <div class="sort-options">
+                            <select id="sort-select" onchange="applySorting()" class="sort-select">
+                                <option value="newest">Mới nhất</option>
+                                <option value="price-low">Giá thấp đến cao</option>
+                                <option value="price-high">Giá cao đến thấp</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="products-grid" id="products-grid">
+                        <!-- Products will be loaded here by JavaScript -->
+                    </div>
+
+                    <!-- No Results -->
+                    <div class="no-results" id="no-results" style="display: none;">
+                        <p>Không tìm thấy sản phẩm nào</p>
+                        <small>Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</small>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>
+                        <i class="fas fa-recycle"></i>
+                        Chợ Đồ Cũ
+                    </h3>
+                    <p>Nền tảng mua bán đồ cũ uy tín, kết nối người mua và người bán trên toàn quốc.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Về chúng tôi</h4>
+                    <ul>
+                        <li><a href="#">Giới thiệu</a></li>
+                        <li><a href="#">Điều khoản sử dụng</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Quy chế hoạt động</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Hỗ trợ</h4>
+                    <ul>
+                        <li><a href="#">Trung tâm trợ giúp</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                        <li><a href="#">Báo cáo vi phạm</a></li>
+                        <li><a href="#">Hướng dẫn mua bán</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Kết nối với chúng tôi</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Chợ Đồ Cũ. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add Product Modal -->
+    <div class="modal" id="add-product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Đăng tin bán hàng</h3>
+                <button class="modal-close" onclick="hideAddProductModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-product-form" onsubmit="handleAddProduct(event)">
+                    <!-- Product Images -->
+                    <div class="form-group">
+                        <label>Hình ảnh sản phẩm *</label>
+                        <div class="image-upload">
+                            <div class="upload-area">
+                                <i class="fas fa-camera"></i>
+                                <p>Thêm ảnh sản phẩm</p>
+                                <small>Tối đa 8 ảnh, mỗi ảnh dưới 5MB</small>
+                                <button type="button" class="btn btn-secondary">Chọn ảnh</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Title -->
+                    <div class="form-group">
+                        <label for="product-title">Tiêu đề *</label>
+                        <input type="text" id="product-title" required class="form-input" placeholder="Nhập tiêu đề sản phẩm">
+                    </div>
+
+                    <!-- Category -->
+                    <div class="form-group">
+                        <label for="product-category">Danh mục *</label>
+                        <select id="product-category" required class="form-select">
+                            <option value="">Chọn danh mục</option>
+                            <option value="electronics">Điện tử</option>
+                            <option value="fashion">Thời trang</option>
+                            <option value="home">Gia dụng</option>
+                            <option value="books">Sách & Đĩa</option>
+                            <option value="vehicles">Xe cộ</option>
+                        </select>
+                    </div>
+
+                    <!-- Price and Condition -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product-price">Giá bán *</label>
+                            <div class="price-input-wrapper">
+                                <input type="number" id="product-price" required class="form-input" placeholder="0">
+                                <span class="currency">VNĐ</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-condition">Tình trạng *</label>
+                            <select id="product-condition" required class="form-select">
+                                <option value="">Chọn tình trạng</option>
+                                <option value="new">Như mới</option>
+                                <option value="used">Đã sử dụng</option>
+                                <option value="repair">Cần sửa chữa</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="product-description">Mô tả sản phẩm *</label>
+                        <textarea id="product-description" required class="form-textarea" rows="4" placeholder="Mô tả chi tiết về sản phẩm của bạn..."></textarea>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label for="product-location">Địa chỉ *</label>
+                        <select id="product-location" required class="form-select">
+                            <option value="">Chọn tỉnh/thành phố</option>
+                            <option value="hanoi">Hà Nội</option>
+                            <option value="hcm">TP. Hồ Chí Minh</option>
+                            <option value="danang">Đà Nẵng</option>
+                            <option value="haiphong">Hải Phòng</option>
+                            <option value="cantho">Cần Thơ</option>
+                        </select>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="seller-name">Tên người bán *</label>
+                            <input type="text" id="seller-name" required class="form-input" placeholder="Nhập tên của bạn">
+                        </div>
+                        <div class="form-group">
+                            <label for="seller-phone">Số điện thoại *</label>
+                            <input type="tel" id="seller-phone" required class="form-input" placeholder="0901234567">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="seller-email">Email</label>
+                        <input type="email" id="seller-email" class="form-input" placeholder="email@example.com">
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="form-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" required>
+                            <span>Tôi đồng ý với <a href="#">Điều khoản sử dụng</a> và <a href="#">Chính sách bảo mật</a></span>
+                        </label>
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-ghost" onclick="hideAddProductModal()">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Đăng tin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div class="modal" id="product-detail-modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Chi tiết sản phẩm</h3>
+                <button class="modal-close" onclick="hideProductDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="product-detail-content">
+                    <!-- Product detail content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3>Đăng nhập</h3>
+                <button class="modal-close" onclick="hideLoginModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-username">Tên đăng nhập</label>
+                        <input type="text" id="login-username" required class="form-input" placeholder="Nhập tên đăng nhập">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Mật khẩu</label>
+                        <div class="password-input">
+                            <input type="password" id="login-password" required class="form-input" placeholder="Nhập mật khẩu">
+                            <button type="button" class="password-toggle" onclick="togglePassword('login-password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="remember-me">
+                            <span>Ghi nhớ đăng nhập</span>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-full">Đăng nhập</button>
+                    </div>
+                    <div class="form-footer">
+                        <p>Chưa có tài khoản? <a href="#" onclick="showRegisterModal(); hideLoginModal();">Đăng ký ngay</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3>Đăng ký tài khoản</h3>
+                <button class="modal-close" onclick="hideRegisterModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="register-form" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="register-username">Tên đăng nhập *</label>
+                        <input type="text" id="register-username" required class="form-input" placeholder="Tối thiểu 3 ký tự">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" class="form-input" placeholder="email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Mật khẩu *</label>
+                        <div class="password-input">
+                            <input type="password" id="register-password" required class="form-input" placeholder="Tối thiểu 6 ký tự">
+                            <button type="button" class="password-toggle" onclick="togglePassword('register-password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength" id="password-strength"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm-password">Xác nhận mật khẩu *</label>
+                        <div class="password-input">
+                            <input type="password" id="register-confirm-password" required class="form-input" placeholder="Nhập lại mật khẩu">
+                            <button type="button" class="password-toggle" onclick="togglePassword('register-confirm-password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" required>
+                            <span>Tôi đồng ý với <a href="#">Điều khoản sử dụng</a> và <a href="#">Chính sách bảo mật</a></span>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-full">Đăng ký</button>
+                    </div>
+                    <div class="form-footer">
+                        <p>Đã có tài khoản? <a href="#" onclick="showLoginModal(); hideRegisterModal();">Đăng nhập</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Favorites Modal -->
+    <div class="modal" id="favorites-modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Sản phẩm yêu thích</h3>
+                <button class="modal-close" onclick="hideFavoritesModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="favorites-content">
+                    <div class="empty-favorites">
+                        <i class="fas fa-heart-broken"></i>
+                        <p>Chưa có sản phẩm yêu thích</p>
+                        <small>Nhấn vào icon trái tim trên sản phẩm để thêm vào danh sách yêu thích</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
